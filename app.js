@@ -1,53 +1,94 @@
+// ================= STATE =================
 let myLibrary = [];
 
-function Book(id, title, author, readStatus) {
-  this.id = id;
-  this.title = title;
-  this.author = author;
-  this.readStatus = readStatus;
+// ================= MODEL =================
+class Book {
+  constructor(title, author, readStatus = false) {
+    this.id = crypto.randomUUID();
+    this.title = title;
+    this.author = author;
+    this.readStatus = readStatus;
+  }
+
+  toggleRead() {
+    this.readStatus = !this.readStatus;
+  }
 }
 
-function addBook(title, author) {
-  myLibrary.push(new Book(crypto.randomUUID(), title, author, false));
-  displayBooks();
+// ================= DOM REFERENCES =================
+const ul = document.querySelector("ul");
+const form = document.querySelector("form");
+const titleInput = document.querySelector(".title");
+const authorInput = document.querySelector(".author");
+const dialog = document.querySelector("dialog");
+const addBtn = document.querySelector(".add");
+const closeBtn = document.querySelector(".close");
+
+// Safety check
+if (!ul || !form || !titleInput || !authorInput || !dialog) {
+  console.error("Missing required DOM elements.");
 }
 
-let books = document.querySelector(".books");
-let ul = document.querySelector("ul");
-
+// ================= RENDER =================
 function displayBooks() {
   ul.innerHTML = "";
-  myLibrary.forEach((lib) => {
-    let li = document.createElement("li");
-    li.dataset.id = lib.id;
-    let toggleBtn = document.createElement("button");
-    toggleBtn.textContent = "Toggle";
+
+  if (myLibrary.length === 0) {
+    ul.innerHTML = "<li class='empty'>No books added yet.</li>";
+    return;
+  }
+
+  myLibrary.forEach((book) => {
+    const li = document.createElement("li");
+    li.dataset.id = book.id;
+
+    const info = document.createElement("span");
+    info.textContent = `${book.title} by ${book.author}`;
+
+    // ✅ Apply line-through if read
+    if (book.readStatus) {
+      info.classList.add("read");
+    }
+
+    const toggleBtn = document.createElement("button");
+    toggleBtn.textContent = book.readStatus
+      ? "Mark Unread"
+      : "Mark Read";
     toggleBtn.classList.add("toggle");
-    let deleteBtn = document.createElement("button");
+
+    const deleteBtn = document.createElement("button");
     deleteBtn.textContent = "Remove";
     deleteBtn.classList.add("delete");
-    li.textContent = `${lib.title} by ${lib.author} & ${lib.readStatus ? "Read" : "Unread"} `;
+
+    li.append(info, toggleBtn, deleteBtn);
     ul.appendChild(li);
-    li.appendChild(toggleBtn);
-    li.appendChild(deleteBtn);
   });
 }
 
-function toggle(id) {
-  const book = myLibrary.find((lib) => lib.id === id);
+// ================= STATE ACTIONS =================
+function addBook(title, author) {
+  const newBook = new Book(title, author);
+  myLibrary.push(newBook);
+  displayBooks();
+}
 
-  if (book) {
-    book.readStatus = !book.readStatus;
-  }
+function toggleBook(id) {
+  const book = myLibrary.find((b) => b.id === id);
+  if (!book) return;
 
+  book.toggleRead();
   displayBooks();
 }
 
 function removeBook(id) {
-  myLibrary = myLibrary.filter((lib) => lib.id !== id);
+  const exists = myLibrary.some((b) => b.id === id);
+  if (!exists) return;
+
+  myLibrary = myLibrary.filter((b) => b.id !== id);
   displayBooks();
 }
 
+// ================= EVENT DELEGATION =================
 ul.addEventListener("click", (e) => {
   const li = e.target.closest("li");
   if (!li) return;
@@ -55,7 +96,7 @@ ul.addEventListener("click", (e) => {
   const id = li.dataset.id;
 
   if (e.target.classList.contains("toggle")) {
-    toggle(id);
+    toggleBook(id);
   }
 
   if (e.target.classList.contains("delete")) {
@@ -63,15 +104,39 @@ ul.addEventListener("click", (e) => {
   }
 });
 
-let form = document.querySelector("form");
-let title = document.querySelector(".title");
-let author = document.querySelector(".author");
-
+// ================= FORM HANDLING =================
 form.addEventListener("submit", (e) => {
   e.preventDefault();
-  let inp1 = title.value.trim();
-  let inp2 = author.value.trim();
-  addBook(inp1, inp2);
-  title.value = "";
-  author.value = "";
+
+  const title = titleInput.value.trim();
+  const author = authorInput.value.trim();
+
+  // Prevent empty values
+  if (!title || !author) {
+    alert("Both title and author are required.");
+    return;
+  }
+
+  // Prevent duplicates
+  const exists = myLibrary.some(
+    (b) =>
+      b.title.toLowerCase() === title.toLowerCase() &&
+      b.author.toLowerCase() === author.toLowerCase()
+  );
+
+  if (exists) {
+    alert("This book already exists.");
+    return;
+  }
+
+  addBook(title, author);
+
+  form.reset();
+  dialog.close();
 });
+
+// ================= DIALOG CONTROL =================
+addBtn.addEventListener("click", () => {
+  dialog.showModal();
+});
+

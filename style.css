@@ -1,0 +1,222 @@
+.read {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+.empty {
+  opacity: 0.6;
+  font-style: italic;
+}
+/* ================= RESET ================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family:
+    "Inter",
+    system-ui,
+    -apple-system,
+    sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px;
+  color: #f1f5f9;
+}
+
+/* ================= ADD BUTTON ================= */
+.add {
+  padding: 12px 24px;
+  background: #3b82f6;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+}
+
+.add:hover {
+  transform: translateY(-2px);
+  background: #2563eb;
+  box-shadow: 0 12px 25px rgba(59, 130, 246, 0.5);
+}
+
+/* ================= BOOK LIST ================= */
+.books {
+  width: 100%;
+  max-width: 700px;
+  margin-top: 40px;
+}
+
+ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ================= BOOK CARD ================= */
+li {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  padding: 18px 20px;
+  border-radius: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  transition: all 0.3s ease;
+  animation: fadeIn 0.3s ease forwards;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+li:hover {
+  transform: translateY(-3px);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* ================= BOOK TEXT ================= */
+li span {
+  flex: 1;
+  font-size: 15px;
+  transition: all 0.3s ease;
+}
+
+/* Line-through animation */
+.read {
+  text-decoration: line-through;
+  opacity: 0.6;
+  transition: all 0.3s ease;
+}
+
+/* ================= BUTTONS ================= */
+button {
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.toggle {
+  background: #22c55e;
+  color: white;
+}
+
+.toggle:hover {
+  background: #16a34a;
+  transform: scale(1.05);
+}
+
+.delete {
+  background: #ef4444;
+  color: white;
+}
+
+.delete:hover {
+  background: #dc2626;
+  transform: scale(1.05);
+}
+
+/* ================= EMPTY STATE ================= */
+.empty {
+  text-align: center;
+  opacity: 0.6;
+  font-style: italic;
+}
+
+/* ================= DIALOG ================= */
+dialog {
+  border: none;
+  border-radius: 16px;
+  padding: 30px;
+  background: #1e293b;
+  color: white;
+  width: 90%;
+  max-width: 400px;
+  animation: scaleIn 0.2s ease forwards;
+}
+
+dialog::backdrop {
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+}
+
+/* ================= FORM ================= */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+input {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #334155;
+  background: #0f172a;
+  color: white;
+  outline: none;
+  transition: border 0.2s ease;
+}
+
+input:focus {
+  border: 1px solid #3b82f6;
+}
+
+form button {
+  background: #3b82f6;
+  color: white;
+  padding: 10px;
+}
+
+form button:hover {
+  background: #2563eb;
+}
+
+/* ================= ANIMATIONS ================= */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 500px) {
+  li {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  li span {
+    margin-bottom: 10px;
+  }
+
+  button {
+    width: 100%;
+  }
+}
