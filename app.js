@@ -1,3 +1,21 @@
+function saveToLocalStorage() {
+  localStorage.setItem("library", JSON.stringify(myLibrary));
+}
+
+function loadFromLocalStorage() {
+  const stored = localStorage.getItem("library");
+  if (!stored) return;
+
+  const parsed = JSON.parse(stored);
+
+  myLibrary = parsed.map((book) => {
+    const newBook = new Book(book.title, book.author, book.readStatus);
+    newBook.id = book.id; // preserve id
+    return newBook;
+  });
+
+  displayBooks();
+}
 // ================= STATE =================
 let myLibrary = [];
 
@@ -51,9 +69,7 @@ function displayBooks() {
     }
 
     const toggleBtn = document.createElement("button");
-    toggleBtn.textContent = book.readStatus
-      ? "Mark Unread"
-      : "Mark Read";
+    toggleBtn.textContent = book.readStatus ? "Mark Unread" : "Mark Read";
     toggleBtn.classList.add("toggle");
 
     const deleteBtn = document.createElement("button");
@@ -69,6 +85,7 @@ function displayBooks() {
 function addBook(title, author) {
   const newBook = new Book(title, author);
   myLibrary.push(newBook);
+  saveToLocalStorage();
   displayBooks();
 }
 
@@ -77,6 +94,7 @@ function toggleBook(id) {
   if (!book) return;
 
   book.toggleRead();
+  saveToLocalStorage();
   displayBooks();
 }
 
@@ -85,6 +103,7 @@ function removeBook(id) {
   if (!exists) return;
 
   myLibrary = myLibrary.filter((b) => b.id !== id);
+  saveToLocalStorage();
   displayBooks();
 }
 
@@ -121,7 +140,7 @@ form.addEventListener("submit", (e) => {
   const exists = myLibrary.some(
     (b) =>
       b.title.toLowerCase() === title.toLowerCase() &&
-      b.author.toLowerCase() === author.toLowerCase()
+      b.author.toLowerCase() === author.toLowerCase(),
   );
 
   if (exists) {
@@ -140,3 +159,4 @@ addBtn.addEventListener("click", () => {
   dialog.showModal();
 });
 
+loadFromLocalStorage();
